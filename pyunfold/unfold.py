@@ -209,9 +209,14 @@ def _unfold(prior=None, mixer=None, ts_func=None, max_iter=100,
         # Perform unfolding for this iteration
         unfolded_n_c = mixer.smear(current_n_c)
         iteration += 1
+        sys_err = None
+        try:
+            sys_err = mixer.get_MC_err()
+        except MemoryError:
+            print("WARNING: Could not allocate memory to compute sys_err. sys_err will be set to 'None' in output.")
         status = {'unfolded': unfolded_n_c,
                   'stat_err': mixer.get_stat_err(),
-                  'sys_err': mixer.get_MC_err(),
+                  'sys_err': sys_err,
                   'num_iterations': iteration,
                   'unfolding_matrix': mixer.Mij}
 
